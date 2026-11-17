@@ -1,0 +1,23 @@
+# Uber — CRLF scope. Allow wildcards; ! lines are OUT OF SCOPE exclusions.
+*.uber.com
+*.ubereats.com
+*.uberinternal.com
+
+# --- exclusions (out of scope) ---
+!uber.onelogin.com
+!uber.com.cn
+!*.uber.com.cn
+!scaledsolutions*.uber.com
+!*scaledsolutions.uber.com
+!people.uber.com
+!newsroom.uber.com
+!merchants.ubereats.com
+!love.uber.com
+!brand.uber.com
+!assets.uber.com
+!et.uber.com
+!eng.uber.com
+!drive.uber.com
+!central-beta.uber.com
+!bizblog.uber.com
+!adsacademy.uber.com

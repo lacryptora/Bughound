@@ -1,0 +1,4 @@
+# One host per line. *. wildcards allowed. Lines starting with # are ignored.
+# Only list hosts you are AUTHORIZED to test (your assets / confirmed bug-bounty scope).
+target.com
+*.target.com

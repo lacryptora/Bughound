@@ -1,0 +1,84 @@
+# Remitly bug bounty — ELIGIBLE web assets only (from the program asset list).
+# Mobile apps and the ineligible www.remitly.com/blog are intentionally excluded.
+# Confirm you are registered on the program and follow its policy before testing.
+
+# --- wildcards (subdomain enumeration is useful here) ---
+*.int.remitly.com
+*.dev.remitly.com
+
+# --- remitly.com (NO wildcard in scope: only these exact hosts) ---
+remitly.com
+login.remitly.com
+auth.remitly.com
+api.remitly.com
+access.remitly.com
+access-sandbox.remitly.com
+blog.remitly.com
+news.remitly.com
+ir.remitly.com
+careers.remitly.com
+ablink.info.remitly.com
+metrics.int.remitly.com
+
+# --- remitly.io (exact hosts listed in scope) ---
+api.remitly.io
+cards.remitly.io
+cardpayments.remitly.io
+media.remitly.io
+partner-webhook.remitly.io
+funding-webhooks.remitly.io
+hub-api-sandbox.remitly.io
+
+# --- rewire ---
+rewire.com
+site.rewire.com
+rates.rewire.com
+app.rewire.to
+app3.rewire.to
+
+# --- other eligible apex domains ---
+whyisend.com
+travelcash.money
+remitresearch.com
+remitlywallet.com
+remitlytest.com
+remitlypayments.com
+remitlypay.com
+remitlyit.com
+remitlydata.com
+remitlycredit.com
+remitlycard.com
+remitlyapi.com
+remitly.xyz
+remitly.uk
+remitly.org
+remitly.net
+remitly.mx
+remitly.me
+remitly.jp
+remitly.io
+remitly.fr
+remitly.eu
+remitly.es
+remitly.de
+remitly.com.mx
+remitly.com.au
+remitly.co.uk
+remitly.co
+remitly.cash
+remitly.ca
+remitly-vendor.com
+remitly-3pjs.com
+remitiy.com
+remitir.com
+remilty.org
+remilty.net
+origenfinance.com
+origendebit.com
+origencard.com
+origenbanking.com
+origenapp.com
+insuritly.com
+getsurenow.com
+getorigen.com
+beamitmobile.com

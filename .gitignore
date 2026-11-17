@@ -1,0 +1,16 @@
+# scan output — never commit (contains target data)
+crlf_*/
+data/
+*.zip
+
+# secrets / local config
+.env
+scope.txt
+*.key
+provider-config.yaml
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/

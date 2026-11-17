@@ -1,0 +1,34 @@
+# Self-contained run. The optional `ollama` service gives you a free, local
+# LLM for the AI agent with no API key.
+#
+#   docker compose build
+#   # put scope.txt in ./data, then:
+#   docker compose run --rm hunter -d target.com --scope /data/scope.txt
+#
+#   # with the free local LLM + auto full report:
+#   docker compose --profile llm up -d ollama
+#   docker compose exec ollama ollama pull llama3.1
+#   docker compose run --rm hunter -d target.com --scope /data/scope.txt \
+#       --llm --llm-provider openai --llm-base-url http://ollama:11434/v1 --model llama3.1
+services:
+  hunter:
+    build: .
+    volumes:
+      - ./data:/data
+    environment:
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - TESTER=${TESTER:-}
+    networks: [crlf]
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: [llm]
+    volumes:
+      - ollama:/root/.ollama
+    networks: [crlf]
+
+networks:
+  crlf:
+volumes:
+  ollama:
