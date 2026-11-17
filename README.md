@@ -9,7 +9,6 @@
 
 **A bug bounty recon and multi-vulnerability scanning framework.**
 
-Runs recon once, then hunts several bug classes over the same results, keeps the noise down, and leaves the final call to you.
 
 </div>
 
@@ -30,7 +29,7 @@ The thing it tries hardest to do well is **not waste your time**. A scanner that
 - **Concurrent and polite.** Many hosts are tested in parallel, but each individual host is rate-limited, so full coverage stays fast without hammering any one server.
 - **Resume without re-recon.** Recon is the expensive part. Save the parameter list once and re-scan it as often as you like.
 - **Optional alerts.** Get a ping on Discord or Telegram the moment something worth looking at shows up, while the scan keeps running.
-- **Optional LLM triage.** If you want it, a language model can sort real from false and draft a report. It is off by default and never required.
+- **Optional LLM triage.** If you want it, a language model can sort real from false and draft a report. It is off by default.
 
 ## The modules
 
@@ -90,15 +89,6 @@ export NOTIFY_TELEGRAM_TOKEN="..."; export NOTIFY_TELEGRAM_CHAT="..."
 
 With nothing set it still writes `ALERTS.md` and rings the terminal bell.
 
-## How it keeps the noise down
-
-A few examples of false positives it was taught to ignore, because they came up on real programs:
-
-- **CRLF:** a token echoed inside a `Location` header on a redirect is reflection, not injection. Only a token that becomes its own header line counts.
-- **XSS:** a value reflected URL-encoded (`%22`) into an `og:url` meta tag on a 404 page is not exploitable. It checks the text between two markers, so a `content="` delimiter cannot pose as an un-encoded quote.
-- **Takeover:** a CNAME to a known service only counts when the service's unclaimed-page fingerprint is actually present, or the CNAME target no longer resolves.
-
-Every finding still needs you to reproduce it by hand before reporting. The tool narrows the field; it does not replace judgment.
 
 ## Layout
 
@@ -123,8 +113,5 @@ See [`docs/INSTALL.md`](docs/INSTALL.md) for the full setup on WSL, Ubuntu, or K
 
 ## Disclaimer
 
-For authorized security testing only. Test your own assets, or a bug bounty program whose scope you have confirmed. You are responsible for staying inside that scope and the law. The tool and its reports are drafting aids, not proof of a vulnerability. Reproduce every finding by hand before you disclose it.
+For authorized security testing only. Test your own assets, or a bug bounty program whose scope you have confirmed. You are responsible for staying inside that scope and the law. Automated findings are leads, not confirmed vulnerabilities. Every finding must be manually validated before reporting.
 
-## License
-
-MIT. See [`LICENSE`](LICENSE).
