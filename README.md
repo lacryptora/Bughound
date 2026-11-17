@@ -14,12 +14,6 @@
 
 ---
 
-## What it is
-
-Bughound started as a CRLF scanner and grew into a small framework. You give it a scope file and a target, it enumerates and crawls once, then runs the scanners you pick against the shared results. Everything lands in one report, grouped by bug type, confirmed findings first.
-
-The thing it tries hardest to do well is **not waste your time**. A scanner that prints a thousand "findings" is useless, because you still have to check each one by hand. Bughound filters aggressively: it double-confirms, it ignores reflections that encode their input, it knows that a `Location:` header echoing your URL is not CRLF, and it tells you plainly when it found nothing. The goal is a short list you can actually work through.
-
 ## Features
 
 - **One command, many scanners.** Recon runs once. Pick the modules you want and they all test the same discovered hosts and parameters.
