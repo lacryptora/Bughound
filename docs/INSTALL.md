@@ -34,7 +34,7 @@ bash install.sh                        # external recon/CRLF tools
 
 `install.sh` installs: subfinder, httpx, katana, gau (recon) and crlfuzz
 (CRLF). CRLFsuite and nuclei are optional extras it will try too. Any tool
-that fails is simply skipped at runtime — the built-in fuzzer always works.
+that fails is simply skipped at runtime - the built-in fuzzer always works.
 
 Manual equivalents if you prefer:
 ```bash
@@ -51,7 +51,7 @@ go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
 Pick ONE:
 
-### A. Claude Pro/Max (no API key) — recommended if you have it
+### A. Claude Pro/Max (no API key) - recommended if you have it
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
