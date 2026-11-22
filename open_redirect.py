@@ -21,9 +21,11 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import time
 import types
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import urlparse, parse_qsl
 
@@ -115,34 +117,69 @@ def payloads_for(pool, name, canary, host):
     return [p.replace("{C}", canary).replace("{H}", host) for p in use]
 
 
+def _save_partial(findings):
+    try:
+        Path("findings_openredirect.json").write_text(json.dumps(findings, indent=2))
+    except OSError:
+        pass
+
+
 def hunt(args, cands, canary, pool):
-    s = requests.Session()
-    s.headers["User-Agent"] = UA
-    findings, tests = [], 0
+    """Concurrent across hosts, sequential (rate-limited) within each host.
+
+    Different hosts are probed in parallel (--workers), but every URL on one
+    host is handled by a single thread that sleeps --delay between requests, so
+    no individual server is hammered. This is the same per-host-politeness model
+    the CRLF fuzzer uses; the old version was fully sequential and crawled.
+    """
+    workers = getattr(args, "workers", 15)
+    max_tests = getattr(args, "max_tests", 4000)
+
+    # group candidate URLs by hostname -> one thread owns each host's rate limit
+    by_host = {}
     for url in cands:
-        host = urlparse(url).hostname or ""
-        names = {n for n, _ in parse_qsl(urlparse(url).query, keep_blank_values=True)}
-        for name in names:
-            for payload in payloads_for(pool, name, canary, host):
-                if tests >= args.max_tests:
-                    log("[!] max-tests reached")
-                    return findings
-                tu = inject(url, name, payload)
-                tests += 1
-                hit = probe(s, tu, canary, args.delay)
-                if not hit:
-                    continue
-                # confirm once more
-                hit2 = probe(s, tu, canary, args.delay)
-                where, raw = hit
-                findings.append({
-                    "url": tu, "param": name, "payload": payload,
-                    "where": where, "evidence": raw,
-                    "confirmed": hit2 is not None,
-                })
-                log(f"[HIT] {'confirmed' if hit2 else 'single'}  {name} @ {host}  ({where})")
-                break  # one working payload per param is enough
-    log(f"[*] {tests} requests")
+        by_host.setdefault(urlparse(url).hostname or "", []).append(url)
+
+    findings = []
+    lock = threading.Lock()
+    state = {"tests": 0, "stop": False}
+
+    def do_host(urls):
+        s = requests.Session()
+        s.headers["User-Agent"] = UA
+        host = urlparse(urls[0]).hostname or ""
+        for url in urls:
+            names = {n for n, _ in parse_qsl(urlparse(url).query, keep_blank_values=True)}
+            for name in names:
+                for payload in payloads_for(pool, name, canary, host):
+                    with lock:
+                        if state["stop"] or state["tests"] >= max_tests:
+                            state["stop"] = True
+                            return
+                        state["tests"] += 1
+                    tu = inject(url, name, payload)
+                    hit = probe(s, tu, canary, args.delay)
+                    if not hit:
+                        continue
+                    hit2 = probe(s, tu, canary, args.delay)  # confirm once more
+                    where, raw = hit
+                    with lock:
+                        findings.append({
+                            "url": tu, "param": name, "payload": payload,
+                            "where": where, "evidence": raw,
+                            "confirmed": hit2 is not None,
+                        })
+                        _save_partial(findings)
+                    log(f"[HIT] {'confirmed' if hit2 else 'single'}  {name} @ {host}  ({where})")
+                    break  # one working payload per param is enough
+
+    try:
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            list(ex.map(do_host, by_host.values()))
+    except KeyboardInterrupt:
+        state["stop"] = True
+        log("[!] interrupted — partial findings saved to findings_openredirect.json")
+    log(f"[*] {state['tests']} requests across {len(by_host)} hosts, {len(findings)} findings")
     return findings
 
 
