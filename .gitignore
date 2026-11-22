@@ -1,7 +1,19 @@
 # scan output — never commit (contains target data)
 crlf_*/
+hunt_*/
+openredirect_*/
+xss_*/
+js_*/
 data/
 *.zip
+findings*.json
+report_*.md
+ALERTS.md
+*.log
+
+# scope files — never commit (keep your target list private)
+scope.*.txt
+!scope.txt.example
 
 # secrets / local config
 .env
