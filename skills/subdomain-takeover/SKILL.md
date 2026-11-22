@@ -58,3 +58,10 @@ Some programs rate it medium if the subdomain is unused/low-value.
 `report_takeover.md` has a per-candidate draft. Include: the subdomain, the
 `dig` CNAME output, the service's unclaimed-page screenshot, and your benign
 proof if you claimed it. Never serve real malicious content.
+
+## Public resources
+- can-i-take-over-xyz — the fingerprint bible; tells you which services are actually claimable and which are not: https://github.com/EdOverflow/can-i-take-over-xyz
+- HackerOne — A Guide To Subdomain Takeovers 2.0: https://www.hackerone.com/blog/guide-subdomain-takeovers-20
+- OWASP WSTG — Test for Subdomain Takeover: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/10-Test_for_Subdomain_Takeover
+- Cross-check tools: subjack https://github.com/haccer/subjack · nuclei takeover templates https://github.com/projectdiscovery/nuclei-templates (`http/takeovers/`)
+- HackTricks (search "Domain/Subdomain takeover"): https://book.hacktricks.wiki

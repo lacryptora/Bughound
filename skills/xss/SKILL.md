@@ -124,10 +124,18 @@ to confirm DOM/stored execution.
 5. Draft the report only for confirmed execution; include the exact PoC URL/steps
    and a screenshot/recording of the alert.
 
-## Payload sources
-PortSwigger XSS cheat sheet; PayloadsAllTheThings/XSS; Rodolfo Assis XSS cheat
-sheet; aszx87410 "Beyond XSS". Keep a curated set; context dictates the payload,
-not a spray.
+## Public resources
+- PortSwigger XSS cheat sheet — interactive, indexed by context/tag/event, copy-paste vectors: https://portswigger.net/web-security/cross-site-scripting/cheat-sheet
+- PortSwigger research — "One XSS cheatsheet to rule them all": https://portswigger.net/research/one-xss-cheatsheet-to-rule-them-all
+- PortSwigger research — Bypassing DOMPurify again with mutation XSS: https://portswigger.net/research/bypassing-dompurify-again-with-mutation-xss
+- aszx87410 — "Beyond XSS" (DOM clobbering, mXSS, prototype-pollution → XSS): https://aszx87410.github.io/beyond-xss/en/
+- PayloadsAllTheThings — XSS Injection: https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection
+- HackTricks (search "XSS"): https://book.hacktricks.wiki
+- DOMPurify source + releases (check the target's version against fixed bypasses): https://github.com/cure53/DOMPurify
+- XS-Leaks wiki: https://xsleaks.dev
+- Blind XSS — self-hosted XSS Hunter Express: https://github.com/mandatoryprogrammer/xsshunter-express
+
+Keep a curated set; context dictates the payload, not a spray.
 
 ## Severity
 Reflected/DOM XSS on an authenticated origin → typically high (session theft/ATO).

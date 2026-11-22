@@ -57,3 +57,12 @@ On path-based SPAs (luxury retail, dashboards) the CRLF/redirect/xss modules fin
 nothing from URLs alone — the parameters are in the JS-defined API calls. This
 module surfaces them, turning a "0 params" dead end into a real test surface. It
 also finds the single highest-ROI beginner bug: a **leaked live API key**.
+
+## Public resources
+- jsluice — AST-based URL/secret extraction from JS (what the deep-JS step uses): https://github.com/BishopFox/jsluice
+- LinkFinder — endpoints in JS: https://github.com/GerbenJavado/LinkFinder
+- SecretFinder — secrets/keys in JS: https://github.com/m4ll0k/SecretFinder
+- trufflehog — verified secret scanning (checks if a key is live): https://github.com/trufflesecurity/trufflehog · gitleaks: https://github.com/gitleaks/gitleaks
+- keyhacks — how to VALIDATE a found key per service (validate, never use): https://github.com/streaak/keyhacks
+- getJS — collect JS URLs for a target: https://github.com/003random/getJS
+- Source-map recovery: unwebpack-sourcemap https://github.com/rarecoil/unwebpack-sourcemap · sourcemapper https://github.com/denandz/sourcemapper

@@ -76,3 +76,10 @@ All are in `open_redirect.py`'s payload set; add more with the `PAYLOADS` list.
 request, the response `Location` (or meta/JS) pointing at your canary, and a
 browser screenshot/recording of the redirect actually happening. State only the
 impact you demonstrated; mark chains as candidate until proven.
+
+## Public resources
+- PayloadsAllTheThings — Open Redirect: https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Open%20Redirect
+- OWASP — Unvalidated Redirects & Forwards cheat sheet: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+- HackTricks (search "Open Redirect"): https://book.hacktricks.wiki
+- Oralyzer — open-redirect scanner, good for cross-checking a hit: https://github.com/r0075h3ll/Oralyzer
+- Learn from disclosed bugs — search "open redirect" on HackerOne Hacktivity: https://hackerone.com/hacktivity
